@@ -25,5 +25,5 @@
   always_run: True
   changed_when: False
 
-- name: Print last command id
+- name: Print last commit id
   debug: { msg: '{{ id.stdout.split()[0] }}' }
