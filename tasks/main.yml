@@ -18,3 +18,12 @@
   changed_when: False
   when: push|bool
   command: ssh -A {{ ansible_ssh_host|default(inventory_hostname) }} -l root hg --cwd /etc push
+
+- name: Get last commit id
+  register: id
+  command: hg --cwd /etc id
+  always_run: True
+  changed_when: False
+
+- name: Print last command id
+  debug: { msg: '{{ id.stdout.split()[0] }}' }
