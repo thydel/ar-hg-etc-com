@@ -2,7 +2,7 @@
 
 dependencies:
 
-  - name: pysphere
+  - name: amr-hg-commit
     src: https://github.com/thyepi/ansible-hg-modules.git
-    name: amr-hg-commit
+    scm: git
     version: master
