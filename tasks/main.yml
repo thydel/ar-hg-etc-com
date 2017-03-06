@@ -12,7 +12,6 @@
     cwd: /etc
     com: '{{ com }}'
     user: '{{ git_config.config_value }}'
-  register: hg_commit
   become: True
   name: Commit /etc changes using mercurial
 
