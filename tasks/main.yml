@@ -17,8 +17,8 @@
 
 - name: Push if requested
   delegate_to: localhost
-  register: push
-  failed_when: push.rc > 1
+  register: do_push
+  failed_when: do_push.rc > 1
   changed_when: False
   when: push | default(False)
   command: ssh -A {{ ansible_ssh_host | default(inventory_hostname) }} -l root hg --cwd /etc push
