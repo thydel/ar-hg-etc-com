@@ -1,27 +1,39 @@
 ---
 
-- git_config:
-    name: user.email
-    scope: local
-    repo: '{{ playbook_dir }}'
-  register: git_config
-  delegate_to: localhost
-  name: Get user email from git local config
+- name: Check if mercurial is installed
+  register: hg_installed
+  check_mode: False
+  changed_when: no
+  command: dpkg-query -W -f '${Status}' mercurial
 
-- hg_commit:
-    cwd: /etc
-    com: '{{ com }}'
-    user: '{{ git_config.config_value }}'
-  become: True
-  name: Commit /etc changes using mercurial
+- when: hg_installed.stdout != 'install ok installed'
+  debug: { msg: 'Warning, mercurial is not installed' }
 
-- name: Push if requested
-  delegate_to: localhost
-  register: do_push
-  failed_when: do_push.rc > 1
-  changed_when: False
-  when: push | default(False)
-  command: ssh -A {{ ansible_ssh_host | default(inventory_hostname) }} -l root hg --cwd /etc push
+- when: hg_installed.stdout == 'install ok installed'
+  block:
 
-- name: Print last commit id
-  debug: { var: hg_commit.id }
+  - git_config:
+      name: user.email
+      scope: local
+      repo: '{{ playbook_dir }}'
+    register: git_config
+    delegate_to: localhost
+    name: Get user email from git local config
+
+  - hg_commit:
+      cwd: /etc
+      com: '{{ com }}'
+      user: '{{ git_config.config_value }}'
+    become: True
+    name: Commit /etc changes using mercurial
+
+  - name: Push if requested
+    delegate_to: localhost
+    register: do_push
+    failed_when: do_push.rc > 1
+    changed_when: False
+    when: push | default(False)
+    command: ssh -A {{ ansible_ssh_host | default(inventory_hostname) }} -l root hg --cwd /etc push
+
+  - name: Print last commit id
+    debug: { var: hg_commit.id }
