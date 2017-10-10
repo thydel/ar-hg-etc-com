@@ -16,15 +16,36 @@
       name: user.email
       scope: local
       repo: '{{ playbook_dir }}'
-    register: git_config
+    register: git_config_local
     delegate_to: localhost
+    become: False
     name: Get user email from git local config
+
+  - git_config:
+      name: user.email
+      scope: global
+      repo: '{{ playbook_dir }}'
+    register: git_config_global
+    delegate_to: localhost
+    become: False
+    name: Get user email from git local config
+
+  - set_fact:
+      user_email: git_config_local 
+    when: git_config_local is defined
+
+  - set_fact:
+      user_email: git_config_global 
+    when: user_email is not defined and git_config_global is defined
+
+  - fail: 
+      msg: Cant find your git config
+    when: user_email is not defined
 
   - hg_commit:
       cwd: /etc
       com: '{{ com }}'
-      user: '{{ git_config.config_value }}'
-    become: True
+      user: '{{ user_email }}'
     name: Commit /etc changes using mercurial
 
   - name: Push if requested
