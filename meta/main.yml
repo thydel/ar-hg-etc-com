@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Thierry Delamare
+  description: Role Ansible for mercurial
+  license: MIT
+  min_ansible_version: 1.9
+  platforms:
+  - name: Ubuntu
+    versions:
+      - all
+  - name: Debian
+    versions:
+      - all
+  categories:
+    - versionning
+    - system
+    - mercurial
+  dependencies: []
