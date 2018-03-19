@@ -46,6 +46,7 @@
       cwd: /etc
       com: '{{ com }}'
       user: '{{ user_email }}'
+    become: True
     name: Commit /etc changes using mercurial
 
   - name: Push if requested
