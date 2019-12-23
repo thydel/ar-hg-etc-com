@@ -3,6 +3,6 @@
 dependencies:
 
   - name: amr-hg-commit
-    src: https://github.com/thyepi/ansible-hg-modules.git
+    src: git@github.com:thydel/ansible-hg-modules.git
     scm: git
     version: master
